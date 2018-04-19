@@ -56,7 +56,7 @@ public abstract class DefaultAbsSender extends AbsSender {
     protected final ExecutorService exe;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final DefaultBotOptions options;
-    private volatile CloseableHttpClient httpclient;
+    protected volatile CloseableHttpClient httpclient;
     private volatile RequestConfig requestConfig;
 
     protected DefaultAbsSender(DefaultBotOptions options) {
@@ -143,6 +143,29 @@ public abstract class DefaultAbsSender extends AbsSender {
         String url = file.getFileUrl(getBotToken());
         String tempFileName = file.getFileId();
         exe.submit(getDownloadFileAsyncJob(file, callback, url, tempFileName));
+    }
+
+    protected CloseableHttpClient createHttpClient() {
+        CloseableHttpClient localClient = null;
+
+        if (options.getCredentialsProvider() != null) {
+            localClient = HttpClientBuilder.create()
+                    .setProxy(options.getHttpProxy())
+                    .setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
+                    .setDefaultCredentialsProvider(options.getCredentialsProvider())
+                    .setSSLHostnameVerifier(new NoopHostnameVerifier())
+                    .setConnectionTimeToLive(70, TimeUnit.SECONDS)
+                    .setMaxConnTotal(100)
+                    .build();
+        } else {
+            localClient = HttpClientBuilder.create()
+                    .setSSLHostnameVerifier(new NoopHostnameVerifier())
+                    .setConnectionTimeToLive(70, TimeUnit.SECONDS)
+                    .setMaxConnTotal(100)
+                    .build();
+        }
+
+        return localClient;
     }
 
     // Specific Send Requests

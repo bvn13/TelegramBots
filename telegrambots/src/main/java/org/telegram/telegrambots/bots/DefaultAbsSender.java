@@ -56,7 +56,7 @@ public abstract class DefaultAbsSender extends AbsSender {
     protected final ExecutorService exe;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final DefaultBotOptions options;
-    protected volatile CloseableHttpClient httpclient;
+    private volatile CloseableHttpClient httpclient;
     private volatile RequestConfig requestConfig;
 
     protected DefaultAbsSender(DefaultBotOptions options) {

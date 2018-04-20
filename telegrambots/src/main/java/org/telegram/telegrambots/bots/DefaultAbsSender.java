@@ -86,29 +86,6 @@ public abstract class DefaultAbsSender extends AbsSender {
         return options;
     }
 
-    protected CloseableHttpClient createHttpClient() {
-        CloseableHttpClient localClient = null;
-
-        if (options.getCredentialsProvider() != null) {
-            localClient = HttpClientBuilder.create()
-                    .setProxy(options.getHttpProxy())
-                    .setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
-                    .setDefaultCredentialsProvider(options.getCredentialsProvider())
-                    .setSSLHostnameVerifier(new NoopHostnameVerifier())
-                    .setConnectionTimeToLive(70, TimeUnit.SECONDS)
-                    .setMaxConnTotal(100)
-                    .build();
-        } else {
-            localClient = HttpClientBuilder.create()
-                    .setSSLHostnameVerifier(new NoopHostnameVerifier())
-                    .setConnectionTimeToLive(70, TimeUnit.SECONDS)
-                    .setMaxConnTotal(100)
-                    .build();
-        }
-
-        return localClient;
-    }
-
     // Send Requests
 
     public final java.io.File downloadFile(String filePath) throws TelegramApiException {
@@ -143,29 +120,6 @@ public abstract class DefaultAbsSender extends AbsSender {
         String url = file.getFileUrl(getBotToken());
         String tempFileName = file.getFileId();
         exe.submit(getDownloadFileAsyncJob(file, callback, url, tempFileName));
-    }
-
-    protected CloseableHttpClient createHttpClient() {
-        CloseableHttpClient localClient = null;
-
-        if (options.getCredentialsProvider() != null) {
-            localClient = HttpClientBuilder.create()
-                    .setProxy(options.getHttpProxy())
-                    .setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy())
-                    .setDefaultCredentialsProvider(options.getCredentialsProvider())
-                    .setSSLHostnameVerifier(new NoopHostnameVerifier())
-                    .setConnectionTimeToLive(70, TimeUnit.SECONDS)
-                    .setMaxConnTotal(100)
-                    .build();
-        } else {
-            localClient = HttpClientBuilder.create()
-                    .setSSLHostnameVerifier(new NoopHostnameVerifier())
-                    .setConnectionTimeToLive(70, TimeUnit.SECONDS)
-                    .setMaxConnTotal(100)
-                    .build();
-        }
-
-        return localClient;
     }
 
     // Specific Send Requests
